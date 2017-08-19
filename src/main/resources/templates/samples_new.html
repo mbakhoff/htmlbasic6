@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<h1>New item</h1>
+
+<form th:action="@{/samples}" method="post">
+  <div>
+    <label>
+      Key
+      <input th:field="${sampleItem.key}" />
+    </label>
+  </div>
+  <div>
+    <label>
+      Value
+      <input th:field="${sampleItem.value}" />
+    </label>
+  </div>
+  <input type="submit" />
+</form>
+
+</body>
+</html>

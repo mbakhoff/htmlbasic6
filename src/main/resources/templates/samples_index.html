@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<h1>All items</h1>
+
+<div>
+  <ul th:each="item : ${items}">
+    <li>
+      [[${item.key}]] -> [[${item.value}]]
+      <a th:href="@{/samples/{id}(id=${item.id})}">View</a>
+    </li>
+  </ul>
+</div>
+
+<a th:href="@{/samples/new}">Add new item</a>
+
+</body>
+</html>

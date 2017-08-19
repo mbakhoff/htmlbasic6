@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<h1>View item</h1>
+
+<div>
+  Key: <span th:text="${sampleItem.key}"></span>
+</div>
+
+<div>
+  Value: <span th:text="${sampleItem.value}"></span>
+</div>
+
+<a th:href="@{/samples/{id}/edit(id=${sampleItem.id})}">Edit</a>
+
+</body>
+</html>
