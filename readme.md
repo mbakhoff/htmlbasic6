@@ -17,10 +17,11 @@ Because it probably contains several subtle bugs that we don't even know about u
 * remove login tokens from the User class
 * remove security filters
 * remove cookie logic from login/logout
+* (keep the password hash in the User)
 
 ## Enable Spring Security
 
-Add this to *pom.xml* (already present is this repository):
+Add this to *pom.xml*:
 ```xml
 <dependency>
   <groupId>org.springframework.boot</groupId>
@@ -159,7 +160,7 @@ class AuthenticationManager {
 Spring will search all classes that have the `@Component` annotation.
 It will find our `ForumUserService` class, which implements `UserDetailsService`, create an instance of it and pass it to the `AuthenticationManager` constructor.
 
-The authentication manager also needs a `PasswordEncoder` implementation that it will use to hash the passowords.
+The authentication manager also needs a `PasswordEncoder` implementation that it will use to hash the passwords.
 Spring will search all classes that have the `@Component` annotation, but we have no classes that implement `PasswordEncoder`.
 Next, Spring will search all classes that have the `@Configuration` annotation and find our `SecurityConfig`.
 Spring will search it and find the [*bean definition*](https://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-java-basic-concepts):
@@ -175,11 +176,7 @@ Spring will call the method, get a new `BCryptPasswordEncoder` and pass it to th
 # Webapp user preferences
 
 In this part we're going to add a preferences page for our users.
-The page will contain the following options:
-
-* change display name
-* set the profile picture
-* set the preferred time format
+The page will allow the user to change the display name and set the profile picture.
 
 ## Bootstrap it
 
@@ -192,6 +189,7 @@ Bootstrap checklist:
 * include the bootstrap css by adding a `<link>` element to `<head>`.
   you can copy-paste the link from [Getting started - Bootstrap](https://getbootstrap.com/docs/3.3/getting-started/) (look for *Latest compiled and minified CSS*)
 * whitelist `https://maxcdn.bootstrapcdn.com` in the CSP *style-src* directive; see [style-src at MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/style-src) for details.
+  if you don't, then the browser will refuse to load the bootstrap css (we configured script-src to 'self' earlier, which will only allow css files from our own server).
 * don't invent your own page structure.
   base the structure on the samples in the [bootstrap documentation](https://getbootstrap.com/docs/3.3/css/)
   * wrap everything in the body in a `<div class="container">`
@@ -249,9 +247,9 @@ When the validation fails, you'll usually want to render the form again and let 
 ### Add form validation to the preferences page
 
 The display name should be at least 2 characters long.
-Add the necessary annotations to the `User` class.
+Add the necessary annotation to the `User` class.
 Change the request handler to validate the form.
-Show the errors in the form when validation fails.
+If the validation fails, send the user back to the form and show the errors.
 
 ## Add profile icons to the users
 
@@ -266,7 +264,7 @@ The icon is just a piece of binary data.
 Add a new field of type `byte[]` to the `User`.
 Annotate the field with `@Lob` which tells Hibernate to store it and not complain.
 
-### Add file upload
+### Add the file upload
 
 File uploads work using the `<input type="file">` element.
 However there is a trick - the form's content type must be switched from the default `application/x-www-form-urlencoded` to `multipart/form-data`.
@@ -278,7 +276,7 @@ Nonetheless, it's good to know a little more about it.
 
 The default `application/x-www-form-urlencoded` is rather primitive and cannot mix values from regular form inputs with data from the files.
 It simply has no way to tell the server where the file begins and ends.
-This is what is looks like (based on *samples_edit.html*):
+This is what a urlencoded *POST* looks like (based on *samples_edit.html*):
 
 ```text
 POST /samples/urlencoded HTTP/1.1
@@ -289,7 +287,7 @@ _csrf=f47290f2-c499-4e86-b9a2-8919bda7c889&key=some-key&value=some-value
 ```
 
 The `multipart/form-data` is a bit more complicated and less efficient for sending form data, but it is file upload friendly.
-This is what it looks like:
+This is what a multipart *POST* looks like:
 
 ```text
 POST /samples/multipart HTTP/1.1
