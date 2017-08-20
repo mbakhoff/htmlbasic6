@@ -236,6 +236,7 @@ See the validator documentation for [examples](http://docs.jboss.org/hibernate/s
 Next, add the model class as the request handler parameter.
 For example, when you add `Person` as the request handler parameter, Spring will create a new `Person` object when a request arrives and sets all person's fields that it can find from the submitted form.
 Annotate the parameter with `@Valid` to enable validation.
+Note that the form input names must follow the naming scheme *modelClassName.fieldName* (see the SampleItem class and the sample html templates).
 Finally, add the `BindingResult` parameter to the request handler.
 The `BindingResult` parameter must be right after the model class parameter!
 This object allows you to inspect the validation results.
