@@ -68,7 +68,7 @@ public class ForumUserService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     // TODO: implement (in our system, email is the username)
-    // return org.springframework.security.core.userdetails.User(userName, hashedPassword, authority)
+    // should return org.springframework.security.core.userdetails.User
   }
 }
 ```
