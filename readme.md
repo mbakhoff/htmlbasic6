@@ -11,13 +11,20 @@ Because security is complicated and the best way to understand what's going on i
 Why can't we keep using our own implementation?
 Because it probably contains several subtle bugs that we don't even know about until we get hacked.
 
-## Remove the hand written security:
+## Migrating to Spring Security
 
-* remove csrf tokens from html forms
-* remove login tokens from the User class
-* remove security filters
-* remove cookie logic from login/logout
-* (keep the password hash in the User)
+As the first step, the security features we added in the last tutorial must be removed.
+
+| Current solution (to be removed) | Replacement |
+| --- | --- |
+| login token stored in the `User` class and a cookie | spring security will remember the login information using cookies and http sessions. methods for login/logout and getting the logged in user are provided. |
+| `CsrfFilter` for generating and checking the csrf token | very similar filter is built into spring security and enabled out of the box |
+| csrf tokens manually added to html forms | csrf tokens automatically added by spring security's integration with thymeleaf |
+| csrf token manually cleared on login/logout | spring security will automatically clear the csrf token on login/logout |
+| security filter for adding *Content-Security-Policy*, *Strict-Transport-Security* and *X-Frame-Options* headers | spring security will automatically add *Strict-Transport-Security* and *X-Frame-Options* headers. *Content-Security-Policy* must be configured in the `SecurityConfig` class (see below). |
+
+Keep the HTTPS configuration - this is part of the server configuration not specific to Spring Security.
+Also keep the password hash field in the `User` class.
 
 ## Enable Spring Security
 
@@ -38,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     // TODO: configure the CSP header (doc link below)
+    // use the same CSP policy as we had in the last tutorial
     // HSTS, X-Frame-Options and CSRF tokens are enabled by default
   }
 
@@ -48,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
-[Spring Security Reference: Headers](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#headers) has more information about configuring HTTP headers.
+[Spring Security Reference: Headers](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#headers) has more information about configuring HTTP headers (scroll down for CSP).
 
 Spring Security has built in CSRF protection.
 This is enabled by default and works out of the box.
@@ -197,7 +205,7 @@ Bootstrap checklist:
 
 ## Use Spring form validation
 
-We're going to add validation to the forum user's details.
+We're going to add validation to the new preferences page form.
 Spring validation can check the form fields that are submitted from the html page and automatically generate error messages for bad values.
 Here is an example:
 
