@@ -212,7 +212,10 @@ Here is an example:
 ```java
 class Person {
   @Min(18)
-  int age;
+  private int age;
+
+  public int getAge() { return age; }
+  public void setAge(int age) { this.age = age; }
 }
 
 @RequestMapping(method = RequestMethod.POST)
@@ -244,10 +247,15 @@ See the validator documentation for [examples](http://docs.jboss.org/hibernate/s
 Next, add the model class as the request handler parameter.
 For example, when you add `Person` as the request handler parameter, Spring will create a new `Person` object when a request arrives and sets all person's fields that it can find from the submitted form.
 Annotate the parameter with `@Valid` to enable validation.
-Note that the form input names must follow the naming scheme *modelClassName.fieldName* (see the SampleItem class and the sample html templates).
 Finally, add the `BindingResult` parameter to the request handler.
-The `BindingResult` parameter must be right after the model class parameter!
 This object allows you to inspect the validation results.
+
+Some requirements:
+* the class must have a default constructor
+* the class must have getters and setters for all the fields that are submitted from the form.
+* the form input names must follow the naming scheme *modelClassName.fieldName* (see the SampleItem class and the sample html templates).
+  for example, the `age` field from class `app.model.Person` should use `person.age` as the input name.
+* The `BindingResult` parameter must be placed right after the model class parameter in the request handler.
 
 All the validation results are also accessible in the Thymeleaf templates.
 Thymeleaf has a [pretty decent documentation](http://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html#validation-and-error-messages) about that.
@@ -327,12 +335,13 @@ use wireshark to capture http packets
 ### Save the file in the request handler
 
 To access the posted file in the request handler, add a new parameter to the handler method: `@RequestParam MultipartFile theFile`.
-Note that the parameter name must match the name of the html input, otherwise Spring cannot match them up.
+Note that the parameter name must match the name attribute of the html `<input>`, otherwise Spring cannot match them up.
 
 Before saving the image, we should verify that it's an image and convert it to the *jpg* format.
 ```java
 BufferedImage image = ImageIO.read(uploadedFile);
 ImageIO.write(image, "jpg", output);
+// hint: use ByteArrayOutputStream
 ```
 
 By default, the server will only allow small file uploads.
