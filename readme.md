@@ -336,6 +336,7 @@ use wireshark to capture http packets
 
 To access the posted file in the request handler, add a new parameter to the handler method: `@RequestParam MultipartFile theFile`.
 Note that the parameter name must match the name attribute of the html `<input>`, otherwise Spring cannot match them up.
+Do not use a name that is also present in the validated class, otherwise Spring will go crazy.
 
 Before saving the image, we should verify that it's an image and convert it to the *jpg* format.
 ```java
@@ -354,7 +355,7 @@ spring.http.multipart.max-request-size=5MB
 ### Add a request handler for accessing the image
 
 The best way to show the users' icons in their posts would be to use the `<img>` tag.
-The tag should contain the *src* attribute.. but where should it link to?
+The tag should contain the *src* (*th:src* in Thymeleaf) attribute.. but where should it link to?
 The image is in the database and the browser cannot directly access the database.
 
 The solution is to add a new controller that deals with the users' icons.
