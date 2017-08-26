@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
-[Spring Security Reference: Headers](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#headers) has more information about configuring HTTP headers (scroll down for CSP).
+[Spring Security Reference: Headers](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#headers) has more information about configuring HTTP headers (scroll down for CSP). CSP [reference at MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy).
 
 Spring Security has built in CSRF protection.
 This is enabled by default and works out of the box.
