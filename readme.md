@@ -210,7 +210,7 @@ Spring validation can check the form fields that are submitted from the html pag
 Here is an example:
 
 ```java
-class Person {
+public class Person {
   @Min(18)
   private int age;
 
